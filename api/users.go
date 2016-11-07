@@ -49,3 +49,37 @@ func (u *UsersClient) VerifyEmail(ctx context.Context, verifyCode string) error 
 
 	return nil
 }
+
+type userUpdateEmail struct {
+	Email string `json:"email"`
+}
+
+// UpdateEmail updates the user profile's email field
+func (u *UsersClient) UpdateEmail(ctx context.Context, email string) (*UserResult, error) {
+	updateEmail := userUpdateEmail{Email: email}
+	req, _, err := u.client.NewRequest("PATCH", "/users/self", nil, &updateEmail, true)
+	if err != nil {
+		return nil, err
+	}
+
+	user := UserResult{}
+	_, err = u.client.Do(ctx, req, &user, nil, nil)
+	return &user, err
+}
+
+type userUpdateName struct {
+	Name string `json:"name"`
+}
+
+// UpdateName updates the user profile's name field
+func (u *UsersClient) UpdateName(ctx context.Context, name string) (*UserResult, error) {
+	updateName := userUpdateName{Name: name}
+	req, _, err := u.client.NewRequest("PATCH", "/users/self", nil, &updateName, true)
+	if err != nil {
+		return nil, err
+	}
+
+	user := UserResult{}
+	_, err = u.client.Do(ctx, req, &user, nil, nil)
+	return &user, err
+}

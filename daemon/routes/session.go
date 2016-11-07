@@ -60,6 +60,20 @@ func loginRoute(engine *logic.Engine) http.HandlerFunc {
 	}
 }
 
+func refreshIdentityRoute(engine *logic.Engine) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		err := engine.Session.Refresh(ctx)
+		if err != nil {
+			log.Printf("Could not refresh identity: %s", err)
+			encodeResponseErr(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
 func logoutRoute(engine *logic.Engine) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 

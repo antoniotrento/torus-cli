@@ -98,6 +98,21 @@ type SessionClient struct {
 	client *Client
 }
 
+// Refresh contacts the daemon to refresh the stored session identity
+func (s *SessionClient) Refresh(ctx context.Context) error {
+	req, _, err := s.client.NewRequest("POST", "/session/refresh", nil, nil, false)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.client.Do(ctx, req, nil, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Who returns the Session object for the current authenticated user or machine
 func (s *SessionClient) Who(ctx context.Context) (*Session, error) {
 	req, _, err := s.client.NewRequest("GET", "/self", nil, nil, false)

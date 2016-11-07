@@ -52,6 +52,17 @@ func (s *Session) Login(ctx context.Context, creds apitypes.LoginCredential) err
 	return s.engine.session.Set(self.Type, self.Identity, self.Auth, creds.Passphrase(), authToken)
 }
 
+// Refresh retrieves the user's identity and updates the stored copy of the session
+func (s *Session) Refresh(ctx context.Context) error {
+	authToken := s.engine.session.Token()
+	self, err := s.engine.client.Self.Get(ctx, authToken)
+	if err != nil {
+		return err
+	}
+
+	return s.engine.db.Set(self.Identity)
+}
+
 // Logout destroys the current session if it exists, otherwise, it returns an
 // error that the request could not be completed.
 func (s *Session) Logout(ctx context.Context) error {
